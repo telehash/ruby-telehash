@@ -3,6 +3,8 @@
 Implementation of the [Telehash v2 protocol](http://telehash.org). This is 
 currently rediculously nonfunctional.
 
+![Travis CI status](https://api.travis-ci.org/dwaite/ruby-telehash.png)
+
 ## Installation
 
 Add this line to your application's Gemfile:
