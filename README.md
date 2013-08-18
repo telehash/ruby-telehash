@@ -1,6 +1,7 @@
 # Telehash
 
-TODO: Write a gem description
+Implementation of the [Telehash v2 protocol](http://telehash.org). This is 
+currently rediculously nonfunctional.
 
 ## Installation
 
@@ -18,7 +19,7 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+Don't even try (yet)
 
 ## Contributing
 

@@ -10,8 +10,16 @@ Gem::Specification.new do |spec|
   spec.email         = ["david@alkaline-solutions.com"]
   spec.summary       = %q{Implementation of the Telehash protocol}
   spec.description   = %q{Implementation of the Telehash protocol. See http://www.telehash.org}
-  spec.homepage      = ""
+  spec.homepage      = "http://www.telehash.org/"
   spec.license       = "MIT"
+
+
+  signing_key = Dir.glob(Dir.home + '/.gem/keys/*private*.pem').first
+  chain = Dir.glob(Dir.home + '/.gem/keys/*public*.pem')
+  if signing_key
+    spec.signing_key   = signing_key
+    spec.cert_chain    = chain
+  end
 
   spec.files         = `git ls-files`.split($/)
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
