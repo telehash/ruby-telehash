@@ -3,13 +3,11 @@ require 'digest'
 module Telehash
   class Switch
     attr_reader :public_key
-    attr_reader :network
-    attr :hashname
+    attr        :hashname
     
-    def initialize(rsa_pkey, network)
-      @key = rsa_pkey.dup
-      @public_key = rsa_pkey.public_key
-      @network = network.dup.freeze
+    def initialize(rsa_pkey)
+      @key            = rsa_pkey.dup
+      @public_key     = rsa_pkey.public_key
       @public_key_pem = rsa_pkey.public_key.to_pem.freeze
     end
     
