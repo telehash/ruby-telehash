@@ -1,9 +1,9 @@
 # Telehash
 
-Implementation of the [Telehash v2 protocol](http://telehash.org). This is 
+Implementation of the [Telehash v2 protocol][telehash]. This is 
 currently rediculously nonfunctional.
 
-![Travis CI status](https://api.travis-ci.org/dwaite/ruby-telehash.png)
+[![Travis CI status][status-img]][status]
 
 ## Installation
 
@@ -30,3 +30,7 @@ Don't even try (yet)
 3. Commit your changes (`git commit -am 'Add some feature'`)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
+
+[status-img]: https://api.travis-ci.org/dwaite/ruby-telehash.png
+[status]:     https://travis-ci.org/dwaite/ruby-telehash
+[telehash]:   http://telehash.org
