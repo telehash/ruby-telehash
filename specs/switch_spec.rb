@@ -28,6 +28,6 @@ describe Switch do
   end
   
   it 'correctly generates a hashname' do
-    subject.hashname.must_equal 'bd9954ac199993a41d928345e7d331d9bd07473a511c080febf168367ca27c78'
+    subject.hashname.must_equal 'e3a7838134bf767d4c950f5c1da8a7892f83b8414b68abf0cba5c7c8cd6836d9'
   end
 end
