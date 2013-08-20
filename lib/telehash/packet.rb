@@ -5,6 +5,15 @@ module Telehash
   class Packet
     attr_accessor :json, :data
     
+    def self.parse raw_packet
+      json_length, rest = raw_packet.unpack "nA*"
+      json_string, data = rest.unpack "A#{json_length}A*"
+      if (data && data.empty?)
+        data = nil
+      end
+      Packet.new JSON.parse(json_string), data
+    end
+    
     def initialize json, data = nil
       @json = json
       @data = data
