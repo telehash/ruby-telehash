@@ -2,17 +2,18 @@ require 'minitest/autorun'
 require 'minitest/spec'
 
 require 'telehash'
+require 'spec_helper'
 
 Switch = Telehash::Switch
 RSA = OpenSSL::PKey::RSA
 
 describe Switch do
   let :private_key do
-    File.read(File.dirname(__FILE__) + '/data/private-key.pem')
+    data 'private_key.pem'
   end
   
   let :public_key do
-    File.read(File.dirname(__FILE__) + '/data/public-key.pem')
+    data 'public_key.pem'
   end
   
   subject do
@@ -28,6 +29,13 @@ describe Switch do
   end
   
   it 'correctly generates a hashname' do
-    subject.hashname.must_equal 'e3a7838134bf767d4c950f5c1da8a7892f83b8414b68abf0cba5c7c8cd6836d9'
+    subject.hashname.must_equal '433b00ac57829581068051e868d5c11cbee4a326611a8640a3175442e68976dd'
+  end
+  
+  it 'generates an open based on a seed' do
+    seeds = Seed.parse_all data_file 'seeds.json'
+    seed = seeds[0]
+    open_packet = subject.generate_open seed
+    open_packet.must_be_instance_of Packet
   end
 end

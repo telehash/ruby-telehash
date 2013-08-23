@@ -1,18 +1,18 @@
 require 'minitest/autorun'
 require 'minitest/spec'
-
 require 'telehash'
+require 'spec_helper'
 
 Seed = Telehash::Seed
 
 describe Seed do
   describe 'creation' do
     let :private_key do
-      File.read(File.dirname(__FILE__) + '/data/private-key.pem')
+      data 'private_key.pem'
     end
   
     let :public_key do
-      File.read(File.dirname(__FILE__) + '/data/public-key.pem')
+      data 'public_key.pem'
     end
   
     let :switch do
@@ -38,7 +38,7 @@ describe Seed do
     end
     
     it 'can parse a JSON file for multiple seeds' do
-      seeds = Seed.parse_all File.read(File.dirname(__FILE__) + "/data/seeds.json")
+      seeds = Seed.parse_all data 'seeds.json'
       seeds.must_be_instance_of Array
       seeds.size.must_equal 1
       s = seeds[0]
