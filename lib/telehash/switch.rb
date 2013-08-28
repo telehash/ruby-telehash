@@ -88,7 +88,6 @@ module Telehash
     end
 
     def decrypt_inner_packet ec, iv, data
-      byebug
       cipher = inner_packet_cipher ec, iv, false
       decrypted_data = cipher.update(data) + cipher.final
       Packet.parse decrypted_data

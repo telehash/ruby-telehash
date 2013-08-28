@@ -3,7 +3,6 @@ require 'minitest/spec'
 
 require 'telehash'
 require 'spec_helper'
-require 'byebug'
 
 module SwitchSpec
   Switch = Telehash::Switch
