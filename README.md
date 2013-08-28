@@ -1,7 +1,7 @@
 # Telehash
 
 Implementation of the [Telehash v2 protocol][telehash]. This is 
-currently rediculously nonfunctional.
+currently ridiculously nonfunctional.
 
 [![Travis CI status][status-img]][status]
 
