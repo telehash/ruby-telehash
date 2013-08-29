@@ -1,5 +1,6 @@
 require 'openssl'
 require 'digest'
+require 'base64'
 
 module Telehash::Packet
   class Open
@@ -13,7 +14,7 @@ module Telehash::Packet
     def self.parse switch, packet, udpsocket_or_host, port = nil
       
       if packet.is_a? String
-        packet = Packet.parse packet
+        packet = Telehash::RawPacket.parse packet
       end
       
       unless packet["type"].eql? "open"
@@ -57,8 +58,8 @@ module Telehash::Packet
       Open.new packet, switch, peer, family, incoming, line, at, ec, instantiated_at
     end
     
-    def self.generate switch, peer, family = nil
-      unless peer.public_key
+    def self.generate switch, seed, family = nil
+      unless seed.public_key
         raise ArgumentError.new "Peer does not have a public key"
       end
 
@@ -70,9 +71,9 @@ module Telehash::Packet
       ec       = generate_ec
       instantiated_at = at
       
-      encrypted_public_ec = peer.encrypt_ec ec
+      encrypted_public_ec = seed.encrypt_ec ec
     
-      inner_packet = create_inner_packet peer, line, at
+      inner_packet = create_inner_packet switch, seed, line, at
       encrypted_inner_packet = encrypt_inner_packet ec, iv, inner_packet
       outer_sig = switch.sign encrypted_inner_packet
 
@@ -88,7 +89,7 @@ module Telehash::Packet
         outer_packet.json["family"] = family.to_s
       end
       packet = outer_packet
-
+      peer = switch.peer seed.public_key, seed.ip, seed.port
       Open.new packet, switch, peer, family, incoming, line, at, ec, instantiated_at
     end
     
@@ -115,7 +116,7 @@ module Telehash::Packet
     def self.decrypt_inner_packet ec, iv, data
       cipher = inner_packet_cipher ec, iv, false
       decrypted_data = cipher.update(data) + cipher.final
-      RawPacket.parse decrypted_data
+      Telehash::RawPacket.parse decrypted_data
     end
     
     def self.inner_packet_key ec
@@ -152,7 +153,7 @@ module Telehash::Packet
       group
     end
 
-    def self.create_inner_packet seed, line, at = nil
+    def self.create_inner_packet switch, peer, line, at = nil
       if !line
         line = SecureRandom.hex 16
       elsif line.length == 16
@@ -166,10 +167,10 @@ module Telehash::Packet
       at = (at.to_f * 1000).floor
       
       Telehash::RawPacket.new({
-        to: seed.hashname,
+        to: peer.hashname,
         line: line,
         at: at
-      }, @public_key_der)
+      }, switch.public_key_der)
     end
   end
 end

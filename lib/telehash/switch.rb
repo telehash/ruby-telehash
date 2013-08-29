@@ -35,10 +35,6 @@ module Telehash
       "Switch: hashname: #{self.hashname}"
     end
     
-    def generate_open peer, family = nil
-      Telehash::Packet::Open.generate self, peer, family
-    end
-    
     def peer public_key, ip, port
       if public_key.is_a? String
         public_key = OpenSSL::PKey::RSA.new public_key

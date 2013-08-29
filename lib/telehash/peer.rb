@@ -14,7 +14,7 @@ module Telehash
       if !json_or_options.is_a?(Hash)
         raise ArgumentError.new "input must be a string or hash"
       end
-      @ip = IPAddr.new(json_or_options[:ip] || json_or_options["ip"])
+      @ip = json_or_options[:ip] || json_or_options["ip"]
       @port = (json_or_options[:port] || json_or_options["port"]).to_i
       @public_key = OpenSSL::PKey::RSA.new (json_or_options[:pubkey] || json_or_options["pubkey"])
       @hashname = (json_or_options[:hashname] || json_or_options["hashname"])
@@ -44,6 +44,10 @@ module Telehash
       bin = point.to_bn.to_s(2)
       public_key.public_encrypt(bin, 
         OpenSSL::PKey::RSA::PKCS1_OAEP_PADDING)
+    end
+    
+    def to_s
+      "Peer: { hashname:#{self.hashname} at #{self.ip}:#{self.port} }" 
     end
   end
 end

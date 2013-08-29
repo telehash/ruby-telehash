@@ -24,7 +24,7 @@ module Telehash
       @ip = @peer.ip
       @port = @peer.port
       
-      ecdhe_secret = outbound_packet.ec.dh_compute_key inbound_packet.ec
+      ecdhe_secret = outbound_open.ec.dh_compute_key inbound_open.ec
       encrypt_cipher_key = Digest::SHA2.digest(ecdhe_secret + @outgoing_line + @incoming_line)
       @outgoing_encrypt_cipher = OpenSSL::Cipher.new "AES-256-CTR"
       @outgoing_encrypt_cipher.encrypt
