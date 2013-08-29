@@ -47,7 +47,13 @@ module Telehash
     end
     
     def to_s
-      "Peer: { hashname:#{self.hashname} at #{self.ip}:#{self.port} }" 
+      if self.ip.include? ":"
+        ip = "[#{self.ip}]"
+      else
+        ip = self.ip
+      end
+
+      "Peer: { hashname: #{self.hashname[0..7]}... at: #{self.ip}:#{self.port} }" 
     end
   end
 end
