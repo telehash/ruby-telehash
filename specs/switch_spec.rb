@@ -8,7 +8,8 @@ module SwitchSpec
   Switch = Telehash::Switch
   RSA = OpenSSL::PKey::RSA
   Seed = Telehash::Seed
-
+  RawPacket = Telehash::RawPacket
+  
   describe Switch do
     let :private_key do
       data 'private_key.pem'
@@ -38,7 +39,7 @@ module SwitchSpec
       seeds = Seed.parse_all data_file 'seeds.json'
       seed = seeds[0]
       open_packet = subject.generate_open seed
-      open_packet.must_be_instance_of Packet
+      open_packet.must_be_instance_of RawPacket
     end
   
     it 'parses a generated open'

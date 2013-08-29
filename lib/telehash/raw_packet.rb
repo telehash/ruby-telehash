@@ -2,7 +2,7 @@ require 'openssl'
 require 'json'
 
 module Telehash
-  class Packet
+  class RawPacket
     attr_accessor :json, :data
     
     def self.parse raw_packet
@@ -11,7 +11,7 @@ module Telehash
       if (data && data.empty?)
         data = nil
       end
-      Packet.new JSON.parse(json_string), data
+      RawPacket.new JSON.parse(json_string), data
     end
     
     def initialize json, data = nil

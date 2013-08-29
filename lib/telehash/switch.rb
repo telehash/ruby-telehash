@@ -2,8 +2,8 @@ require 'digest'
 require 'base64'
 require 'openssl'
 require 'securerandom'
-require 'telehash/seed'
-require 'telehash/packet'
+require 'telehash/peer'
+require 'telehash/raw_packet'
 
 module Telehash
   class Switch
@@ -52,7 +52,7 @@ module Telehash
         at = (at.to_f * 1000).floor
       end
       
-      Packet.new({
+      RawPacket.new({
         to: seed.hashname,
         line: line,
         at: at
@@ -90,11 +90,11 @@ module Telehash
     def decrypt_inner_packet ec, iv, data
       cipher = inner_packet_cipher ec, iv, false
       decrypted_data = cipher.update(data) + cipher.final
-      Packet.parse decrypted_data
+      RawPacket.parse decrypted_data
     end
     
-    def generate_open seed, family = nil
-      unless seed.public_key
+    def generate_open peer, family = nil
+      unless peer.public_key
         raise ArgumentError.new "Peer does not have a public key"
       end
       
@@ -102,13 +102,13 @@ module Telehash
       line = SecureRandom.random_bytes 16
       ec   = generate_ec
 
-      encrypted_public_ec = seed.encrypt_ec ec
+      encrypted_public_ec = peer.encrypt_ec ec
       
-      inner_packet = create_inner_packet seed, line
+      inner_packet = create_inner_packet peer, line
       encrypted_inner_packet = encrypt_inner_packet ec, iv, inner_packet
       outer_sig = @key.sign(OpenSSL::Digest::SHA256.new, encrypted_inner_packet)
 
-      outer_packet = Packet.new({
+      outer_packet = RawPacket.new({
         type: "open",
         open: Base64.encode64(encrypted_public_ec),
         iv: iv.unpack("H*")[0],
@@ -124,7 +124,7 @@ module Telehash
     
     def parse_open packet
       if packet.is_a? String
-        packet = Packet.parse packet
+        packet = RawPacket.parse packet
       end
       unless packet["type"].eql? "open"
         raise ArgumentError.new "Packet is not an open packet"

@@ -1,5 +1,6 @@
-require "telehash/packet"
 require "telehash/line"
+require "telehash/packet/open"
+require "telehash/raw_packet"
 require "telehash/seed"
 require "telehash/switch"
 require "telehash/version"
