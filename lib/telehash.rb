@@ -1,4 +1,5 @@
 require "telehash/packet"
+require "telehash/line"
 require "telehash/seed"
 require "telehash/switch"
 require "telehash/version"
