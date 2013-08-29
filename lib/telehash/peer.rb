@@ -17,11 +17,14 @@ module Telehash
       @ip = IPAddr.new(json_or_options[:ip] || json_or_options["ip"])
       @port = (json_or_options[:port] || json_or_options["port"]).to_i
       @public_key = OpenSSL::PKey::RSA.new (json_or_options[:pubkey] || json_or_options["pubkey"])
-      @hashname = (json_or_options[:hashname] || json_or_options["hashname"]).dup.freeze
+      @hashname = (json_or_options[:hashname] || json_or_options["hashname"])
       computed_hash = Digest::SHA2.hexdigest @public_key.to_der
       if @hashname
-        unless @hashname.eql? computed_hash
-          raise ArgumentError.new "specified hashname does not match hash of key"
+        @hashname = @hashname.dup.freeze
+        if @hashname
+          unless @hashname.eql? computed_hash
+            raise ArgumentError.new "specified hashname does not match hash of key"
+          end
         end
       else
         @hashname = computed_hash.freeze

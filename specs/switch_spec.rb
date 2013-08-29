@@ -33,15 +33,10 @@ module SwitchSpec
   
     it 'correctly generates a hashname' do
       subject.hashname.must_equal '433b00ac57829581068051e868d5c11cbee4a326611a8640a3175442e68976dd'
-    end
-  
-    it 'generates an open based on a seed' do
-      seeds = Seed.parse_all data_file 'seeds.json'
-      seed = seeds[0]
-      open_packet = subject.generate_open seed
-      open_packet.must_be_instance_of RawPacket
-    end
-  
-    it 'parses a generated open'
+    end 
+    
+    it 'generates a peer it hasnt seen before'
+    it 'returns the same peer if it has seen it before'
+    it 'generates a new peer if the ip or port has changed'
   end
 end
