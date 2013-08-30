@@ -1,5 +1,7 @@
 require "telehash/line"
 require "telehash/packet/open"
+require "telehash/packet/seek"
+require "telehash/pointer"
 require "telehash/raw_packet"
 require "telehash/seed"
 require "telehash/switch"

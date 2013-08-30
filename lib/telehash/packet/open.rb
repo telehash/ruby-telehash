@@ -67,7 +67,7 @@ module Telehash::Packet
       
       at       = Time.now
       incoming = false
-      line     = SecureRandom.random_bytes 16
+      line     = SecureRandom.hex 16
       ec       = generate_ec
       instantiated_at = at
       
