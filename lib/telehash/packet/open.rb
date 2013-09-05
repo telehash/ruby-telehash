@@ -8,7 +8,7 @@ module Telehash::Packet
     attr_reader :incoming
     attr_reader :line, :at, :ec
     attr_reader :instantiated_at
-    attr :packet
+    attr        :packet
 
     public
     def self.parse switch, packet, udpsocket_or_host, port = nil

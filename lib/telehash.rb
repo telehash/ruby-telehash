@@ -1,3 +1,4 @@
+require "telehash/dht"
 require "telehash/line"
 require "telehash/packet/open"
 require "telehash/packet/seek"

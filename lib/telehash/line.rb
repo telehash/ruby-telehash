@@ -3,18 +3,20 @@ require 'openssl'
 
 module Telehash
   class Line
-    attr_reader :switch, :peer                   # for my RSA public key, hashname
+    attr_reader :peer                            # for my RSA public key, hashname
     attr_reader :incoming_line, :outgoing_line   # incoming and outgoing line id's
     attr_reader :ip, :port                       # peer's IP and port
     attr_reader :outgoing_encrypt_cipher         # ciphers based on ECDHE key neg - NOT roundtrip!
     attr_reader :incoming_decrypt_cipher         # ciphers need to be reset, and get a new IV each time
        
     def initialize inbound_open, outbound_open
-      @switch = inbound_open.switch
       @peer = inbound_open.peer
+      
+      switch = inbound_open.switch
       unless outbound_open.switch.eql? switch
         raise ArgumentError.new "both packets must be from same switch"
       end
+      
       unless outbound_open.peer.eql? peer
         raise ArgumentError.new "both packets must be for the same peer"
       end

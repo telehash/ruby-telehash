@@ -1,4 +1,3 @@
-require 'digest'
 require 'base64'
 require 'openssl'
 require 'securerandom'
@@ -8,8 +7,9 @@ require 'telehash/raw_packet'
 module Telehash
   class Switch
     attr_reader :public_key
-    attr        :hashname, :key, :public_key_der
-    attr        :pending_lines, :peers
+    attr        :key
+    attr        :hashvalue, :public_key_der
+    attr        :pending_lines, :peers    
     
     def initialize(rsa_pkey)
       @key            = rsa_pkey
@@ -20,8 +20,12 @@ module Telehash
       @peers          = {} #hashname to Peer or Seed
     end
     
+    def hashvalue
+      @hashvalue ||= OpenSSL::Digest::SHA256.digest @public_key_der
+    end
+    
     def hashname
-      @hashname ||= Digest::SHA2.hexdigest @public_key_der
+      self.hashvalue.unpack("H*").first
     end
 
     def decrypt data, padding = OpenSSL::PKey::RSA::PKCS1_OAEP_PADDING
@@ -30,9 +34,10 @@ module Telehash
        
     def sign data, digest = OpenSSL::Digest::SHA256.new
       @key.sign digest, data
-    end 
+    end
+    
     def to_s
-      "Switch: hashname: #{self.hashname}"
+      "Switch: hashname=#{self.hashname[0..7]}..."
     end
     
     def peer public_key, ip, port
@@ -40,7 +45,7 @@ module Telehash
         public_key = OpenSSL::PKey::RSA.new public_key
       end
       
-      hashname = Digest::SHA2.hexdigest public_key.to_der
+      hashname = OpenSSL::Digest::SHA256.digest public_key.to_der
       
       peer = @peers[hashname]
       if peer && peer.ip.eql?(ip) && peer.port.eql?(port)
