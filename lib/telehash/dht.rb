@@ -1,19 +1,20 @@
 module Telehash
+  # DHT support data structure
 	class DHT
-    attr_reader :k, :kbuckets, :my_hash, :hashname, :pending
+    attr_reader :k, :kbuckets, :hashvalue, :hashname, :pending
 
     KEY_SIZE = 256
     BUCKETS = KEY_SIZE / 8
     
     def initialize my_hash, k = 20
-      @my_hash  = DHT.as_bn my_hash
+      @hashvalue  = DHT.as_bn my_hash
       @k = k
       @kbuckets = Array.new(BUCKETS) { Array.new }
       @pending  = []
     end
     
     def hashname
-      @hashname ||= @my_hash.to_s(16).rjust(64, '0')
+      @hashname ||= @hashalue.to_s(16).rjust(64, '0')
     end
     
     def self.distance x, y
@@ -30,11 +31,12 @@ module Telehash
     def self.as_bn key
       if key.is_a? String
         if key.length == 64
-          key = [key].pack('H*')
+          key = key.to_i 16 # convert from hex
+        else
+          key.bytes.inject(0) { |a, b| (a << 8) + b } # convert from binary
         end
-        key.bytes.inject(0) { |a, b| (a << 8) + b }
       else
-        key
+        key # assume is already a proper numeric value
       end
     end
     def add_key key
@@ -83,7 +85,7 @@ module Telehash
     end
     
     def compute_index key
-      mag = DHT.magnitude(DHT.distance @my_hash, key)
+      mag = DHT.magnitude(DHT.distance @hashvalue, key)
       mag ? mag / 8 : nil
     end
 	end

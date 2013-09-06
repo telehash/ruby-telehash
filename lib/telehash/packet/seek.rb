@@ -43,7 +43,7 @@ module Telehash::Packet
       inner_packet = Telehash::RawPacket.parse line.decrypt_incoming(packet.data, iv)
 
       hashname = inner_packet["seek"]
-      seen = inner_packet["see"].to_a.map do |line| Telehash::Pointer.parse line end
+      seen = inner_packet["see"].to_a.map { |line| Telehash::Pointer.parse line }
       Seek.new line, hashname, seen, inner_packet["stream"], packet
     end
     
