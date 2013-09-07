@@ -2,7 +2,6 @@ require 'base64'
 require 'openssl'
 require 'securerandom'
 require 'telehash/core/peer'
-require 'telehash/core/raw_packet'
 
 module Telehash::Core
   class Switch

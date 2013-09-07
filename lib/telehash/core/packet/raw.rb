@@ -1,13 +1,13 @@
 require 'openssl'
 require 'json'
 
-module Telehash::Core
+module Telehash::Core::Packet
   # Represents a raw packet over the wire. Typically used to implement other
   # classes which understand the actual data.
   #
   # See https://github.com/telehash/telehash.org/blob/master/protocol.md#packets
   # for format
-  class RawPacket
+  class Raw
     # Accessors for the JSON and BODY portions of a message explicitly.
     attr_accessor :json, :body
     
@@ -19,7 +19,7 @@ module Telehash::Core
       if (body && body.empty?)
         body = nil
       end
-      RawPacket.new JSON.parse(json_string, symbolize_names: true), body
+      Raw.new JSON.parse(json_string, symbolize_names: true), body
     end
     
     def initialize json, body = nil

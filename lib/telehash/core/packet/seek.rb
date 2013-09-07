@@ -15,7 +15,7 @@ module Telehash::Core::Packet
       iv = SecureRandom.random_bytes(16)
       stream = SecureRandom.hex(16)
       
-      inner_packet = Telehash::Core::RawPacket.new({
+      inner_packet = Telehash::Core::Packet::Raw.new({
         type: "seek",
         seek: hashname,
         stream: stream,
@@ -25,7 +25,7 @@ module Telehash::Core::Packet
         inner_packet[:see] = seen.to_a
       end
       encrypted_inner_packet = line.encrypt_outgoing inner_packet, iv
-      packet = Telehash::Core::RawPacket.new({
+      packet = Telehash::Core::Packet::Raw.new({
         type: "line",
         line: line.outgoing_line,
         iv: iv.unpack("H*")[0]
@@ -36,16 +36,15 @@ module Telehash::Core::Packet
     
     def self.parse line, packet
       if packet.is_a? String
-        packet = Telehash::Core::RawPacket.parse packet
+        packet = Telehash::Core::Packet::Raw.parse packet
       end
       
       iv = packet[:iv]
-      inner_packet = Telehash::Core::RawPacket.parse line.decrypt_incoming(packet.data, iv)
+      inner_packet = Telehash::Core::Packet::Raw.parse line.decrypt_incoming(packet.data, iv)
 
       hashname = inner_packet[:seek]
       seen = inner_packet[:see].to_a.map { |seek_line| Telehash::Core::Pointer.parse seek_line }
       Seek.new line, hashname, seen, inner_packet[:stream], packet
-      inner_packet = Telehash::Core::RawPacket.parse line.decrypt_incoming(packet.data, iv)
 
     end
     

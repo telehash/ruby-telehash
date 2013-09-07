@@ -14,7 +14,7 @@ module Telehash::Core::Packet
     def self.parse switch, packet, udpsocket_or_host, port = nil
       
       if packet.is_a? String
-        packet = Telehash::Core::RawPacket.parse packet
+        packet = Telehash::Core::Packet::Raw.parse packet
       end
       
       unless packet[:type].eql? "open"
@@ -79,7 +79,7 @@ module Telehash::Core::Packet
       encrypted_inner_packet = encrypt_inner_packet ec, iv, inner_packet
       outer_sig = switch.sign encrypted_inner_packet
       encrypted_sig = encrypt_signature outer_sig, ec, line, iv
-      outer_packet = Telehash::Core::RawPacket.new({
+      outer_packet = Telehash::Core::Packet::Raw.new({
         type: "open",
         open: Base64.encode64(encrypted_public_ec),
         iv: iv.unpack("H*")[0],
@@ -127,7 +127,7 @@ module Telehash::Core::Packet
     def self.decrypt_inner_packet ec, iv, body
       cipher = inner_packet_cipher ec, iv, false
       decrypted_body = cipher.update(body) + cipher.final
-      Telehash::Core::RawPacket.parse decrypted_body
+      Telehash::Core::Packet::Raw.parse decrypted_body
     end
     
     def self.inner_packet_key ec
@@ -209,7 +209,7 @@ module Telehash::Core::Packet
 
       at = (at.to_f * 1000).floor
       
-      Telehash::Core::RawPacket.new({
+      Telehash::Core::Packet::Raw.new({
         to: peer.hashname,
         line: line,
         at: at
