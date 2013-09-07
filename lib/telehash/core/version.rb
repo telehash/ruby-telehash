@@ -1,3 +1,5 @@
-module Telehash::Core
-  VERSION = "0.0.3"
+module Telehash
+  module Core
+    VERSION = "0.0.3"
+  end
 end
