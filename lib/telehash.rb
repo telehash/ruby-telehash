@@ -1,9 +1,4 @@
-require "telehash/dht"
-require "telehash/line"
-require "telehash/packet/open"
-require "telehash/packet/seek"
-require "telehash/pointer"
-require "telehash/raw_packet"
-require "telehash/seed"
-require "telehash/switch"
-require "telehash/version"
+module Telehash
+end
+
+require "telehash/core"

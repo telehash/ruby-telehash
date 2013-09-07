@@ -1,7 +1,7 @@
 require 'digest'
 require 'openssl'
 
-module Telehash
+module Telehash::Core
   class Line
     attr_reader :peer                            # for my RSA public key, hashname
     attr_reader :incoming_line, :outgoing_line   # incoming and outgoing line id's

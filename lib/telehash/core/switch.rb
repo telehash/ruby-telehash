@@ -1,10 +1,10 @@
 require 'base64'
 require 'openssl'
 require 'securerandom'
-require 'telehash/peer'
-require 'telehash/raw_packet'
+require 'telehash/core/peer'
+require 'telehash/core/raw_packet'
 
-module Telehash
+module Telehash::Core
   class Switch
     attr_reader :public_key, :hashvalue
     attr        :key

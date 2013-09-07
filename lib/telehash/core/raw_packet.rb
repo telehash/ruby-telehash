@@ -1,7 +1,7 @@
 require 'openssl'
 require 'json'
 
-module Telehash
+module Telehash::Core
   # Represents a raw packet over the wire. Typically used to implement other
   # classes which understand the actual data.
   #

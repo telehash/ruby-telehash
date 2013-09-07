@@ -1,4 +1,4 @@
-module Telehash
+module Telehash::Core
   # DHT support data structure
 	class DHT
     attr_reader :k, :kbuckets, :hashvalue, :pending

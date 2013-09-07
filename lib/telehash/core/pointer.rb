@@ -1,4 +1,4 @@
-module Telehash
+module Telehash::Core
   class Pointer
     attr_reader :hashname, :ip, :port
     

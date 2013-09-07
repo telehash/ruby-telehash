@@ -1,10 +1,10 @@
-require 'telehash/peer'
+require 'telehash/core/peer'
 require 'openssl'
 require 'json'
 require 'ipaddr'
 
-module Telehash
-  class Seed < Peer    
+module Telehash::Core
+  class Seed < Peer  
     def self.parse_all json
       if json.is_a? String
         json = JSON.parse json

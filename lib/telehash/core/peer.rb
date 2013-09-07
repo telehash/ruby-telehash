@@ -2,7 +2,7 @@ require 'json'
 require 'digest'
 require 'openssl'
 
-module Telehash
+module Telehash::Core
   class Peer
     attr_reader :ip, :port, :public_key, :hashname
     # attr_accessible :open_at, :line

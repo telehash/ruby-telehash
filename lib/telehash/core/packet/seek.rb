@@ -3,7 +3,7 @@ require 'digest'
 require 'base64'
 require 'securerandom'
 
-module Telehash::Packet
+module Telehash::Core::Packet
   class Seek
     attr_reader :line
     attr_reader :hashname
@@ -15,7 +15,7 @@ module Telehash::Packet
       iv = SecureRandom.random_bytes(16)
       stream = SecureRandom.hex(16)
       
-      inner_packet = Telehash::RawPacket.new({
+      inner_packet = Telehash::Core::RawPacket.new({
         type: "seek",
         seek: hashname,
         stream: stream,
@@ -25,7 +25,7 @@ module Telehash::Packet
         inner_packet[:see] = seen.to_a
       end
       encrypted_inner_packet = line.encrypt_outgoing inner_packet, iv
-      packet = Telehash::RawPacket.new({
+      packet = Telehash::Core::RawPacket.new({
         type: "line",
         line: line.outgoing_line,
         iv: iv.unpack("H*")[0]
@@ -36,15 +36,17 @@ module Telehash::Packet
     
     def self.parse line, packet
       if packet.is_a? String
-        packet = Telehash::RawPacket.parse packet
+        packet = Telehash::Core::RawPacket.parse packet
       end
       
       iv = packet[:iv]
-      inner_packet = Telehash::RawPacket.parse line.decrypt_incoming(packet.data, iv)
+      inner_packet = Telehash::Core::RawPacket.parse line.decrypt_incoming(packet.data, iv)
 
       hashname = inner_packet[:seek]
-      seen = inner_packet[:see].to_a.map { |seek_line| Telehash::Pointer.parse seek_line }
+      seen = inner_packet[:see].to_a.map { |seek_line| Telehash::Core::Pointer.parse seek_line }
       Seek.new line, hashname, seen, inner_packet[:stream], packet
+      inner_packet = Telehash::Core::RawPacket.parse line.decrypt_incoming(packet.data, iv)
+
     end
     
     def to_s
