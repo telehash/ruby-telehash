@@ -1,11 +1,11 @@
 # coding: utf-8
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'telehash/version'
+require 'telehash/core/version'
 
 Gem::Specification.new do |spec|
   spec.name          = "telehash"
-  spec.version       = Telehash::VERSION
+  spec.version       = Telehash::Core::VERSION
   spec.authors       = ["David Waite"]
   spec.email         = ["david@alkaline-solutions.com"]
   spec.summary       = %q{Implementation of the Telehash protocol}
