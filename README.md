@@ -4,6 +4,9 @@ Implementation of the [Telehash v2 protocol][telehash]. This is
 currently ridiculously nonfunctional.
 
 [![Travis CI status][status-img]][status]
+[![Gem Version](https://badge.fury.io/rb/telehash.png)](http://badge.fury.io/rb/telehash)
+[![Code Climate](https://codeclimate.com/github/telehash/ruby-telehash.png)](https://codeclimate.com/github/telehash/ruby-telehash)
+[![Dependency Status](https://gemnasium.com/telehash/ruby-telehash.png)](https://gemnasium.com/telehash/ruby-telehash)
 
 ## Installation
 
