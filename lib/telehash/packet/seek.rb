@@ -22,7 +22,7 @@ module Telehash::Packet
         seq: 0
       })
       if seen
-        inner_packet["see"] = seen.to_a
+        inner_packet[:see] = seen.to_a
       end
       encrypted_inner_packet = line.encrypt_outgoing inner_packet, iv
       packet = Telehash::RawPacket.new({
@@ -39,12 +39,12 @@ module Telehash::Packet
         packet = Telehash::RawPacket.parse packet
       end
       
-      iv = packet["iv"]
+      iv = packet[:iv]
       inner_packet = Telehash::RawPacket.parse line.decrypt_incoming(packet.data, iv)
 
-      hashname = inner_packet["seek"]
-      seen = inner_packet["see"].to_a.map { |line| Telehash::Pointer.parse line }
-      Seek.new line, hashname, seen, inner_packet["stream"], packet
+      hashname = inner_packet[:seek]
+      seen = inner_packet[:see].to_a.map { |line| Telehash::Pointer.parse line }
+      Seek.new line, hashname, seen, inner_packet[:stream], packet
     end
     
     def to_s
