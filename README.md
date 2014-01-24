@@ -31,6 +31,6 @@ Don't even try (yet)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
 
-[status-img]: https://api.travis-ci.org/dwaite/ruby-telehash.png
-[status]:     https://travis-ci.org/dwaite/ruby-telehash
+[status-img]: https://api.travis-ci.org/telehash/ruby-telehash.png
+[status]:     https://travis-ci.org/telehash/ruby-telehash
 [telehash]:   http://telehash.org
