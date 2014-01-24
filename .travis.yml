@@ -1,6 +1,6 @@
 # jruby-19mode is currently disabled, as jruby has a bug in DER encoding [JRUBY-7092]
 language: ruby
 rvm:
-  - "1.9.3"
   - "2.0.0"
-  - rbx-19mode
+  - "2.1.0"
+  - rbx-2.2.2
