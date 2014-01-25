@@ -12,7 +12,7 @@ module Telehash::Core::Packet
     attr_accessor :json, :body
     
     def self.parse raw_packet
-      return raw_packet if raw_packet.is_a? RawPacket
+      return raw_packet if raw_packet.is_a? Raw
 
       json_length, rest = raw_packet.to_s.unpack "nA*"
       json_string, body = rest.unpack "A#{json_length}A*"

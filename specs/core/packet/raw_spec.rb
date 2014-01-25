@@ -13,11 +13,11 @@ module RawPacketSpec
         p.json.must_be_instance_of Hash
         p.to_s.must_equal "\0\2{}".encode("UTF-8")
       end
-      it 'can be created from an empty hash with data' do
+      it 'can be created from an empty hash with body' do
         p = Raw.new({}, "abcd")
         p.must_be_instance_of Raw
         p.json.must_be_instance_of Hash
-        p.data.must_be_instance_of String
+        p.body.must_be_instance_of String
         p.to_s.must_equal "\0\2\{}abcd".encode("UTF-8")
       end
       it 'can be created with non-empty json' do
@@ -33,16 +33,16 @@ module RawPacketSpec
         p = Raw.parse raw_packet 
         p.must_be_instance_of Raw
         p.json.must_be_instance_of Hash
-        p.data.must_be_nil
+        p.body.must_be_nil
         p.to_s.must_equal raw_packet
       end
-      it 'can parse an empty hash with data' do
+      it 'can parse an empty hash with body' do
         raw_packet = "\0\2\{}abcd".encode("UTF-8")
         p = Raw.parse raw_packet
         p.must_be_instance_of Raw
         p.json.must_be_instance_of Hash
-        p.data.must_be_instance_of String
-        p.data.must_equal "abcd"
+        p.body.must_be_instance_of String
+        p.body.must_equal "abcd"
         p.to_s.must_equal raw_packet
       end
       it 'can parse non-empty json' do
@@ -50,7 +50,7 @@ module RawPacketSpec
         p = Raw.parse raw_packet
         p.must_be_instance_of Raw
         p.json.must_be_instance_of Hash
-        p.json["a"].must_equal "b"
+        p.json[:a].must_equal "b"
         p.to_s.must_equal raw_packet
       end
     end
