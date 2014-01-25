@@ -1,7 +1,7 @@
 module Telehash
   # DHT support data structure
 	class DHT
-    attr_reader :k, :kbuckets, :hashvalue, :hashname, :pending
+    attr_reader :k, :kbuckets, :hashvalue, :pending
 
     KEY_SIZE = 256
     BUCKETS = KEY_SIZE / 8

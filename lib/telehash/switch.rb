@@ -6,9 +6,9 @@ require 'telehash/raw_packet'
 
 module Telehash
   class Switch
-    attr_reader :public_key
+    attr_reader :public_key, :hashvalue
     attr        :key
-    attr        :hashvalue, :public_key_der
+    attr        :public_key_der
     attr        :pending_lines, :peers    
     
     def initialize(rsa_pkey)
@@ -18,10 +18,7 @@ module Telehash
       
       @pending_lines  = {} #hashname to EC key
       @peers          = {} #hashname to Peer or Seed
-    end
-    
-    def hashvalue
-      @hashvalue ||= OpenSSL::Digest::SHA256.digest @public_key_der
+      @hashvalue      = OpenSSL::Digest::SHA256.digest @public_key_der
     end
     
     def hashname

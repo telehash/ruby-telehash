@@ -39,7 +39,7 @@ module Telehash::Packet
         raise ArgumentError.new '"at" value is not a numeric type'
       end
       
-      sender_hashname = Digest::SHA2.hexdigest sender_rsa_public_key_data
+#      sender_hashname = Digest::SHA2.hexdigest sender_rsa_public_key_data
       srsapk = OpenSSL::PKey::RSA.new sender_rsa_public_key_data
 
       encrypted_signature = Base64.decode64(packet[:sig])
@@ -99,7 +99,7 @@ module Telehash::Packet
     
     protected
     def initialize packet, switch, peer, incoming, line, at, ec, instantiated_at
-      @packet, @switch, @peer, @family, @incoming, @line, @at, @ec, @instantiated_at = 
+      @packet, @switch, @peer, @incoming, @line, @at, @ec, @instantiated_at = 
         packet, switch, peer, incoming, line, at, ec, instantiated_at
     end
     
@@ -139,7 +139,7 @@ module Telehash::Packet
       else
         ec_bin = ec.to_s
       end
-      key = Digest::SHA2.digest ec_bin
+      Digest::SHA2.digest ec_bin
     end
     
     def self.encrypted_signature_key ec, line
@@ -155,7 +155,7 @@ module Telehash::Packet
       elsif line.length == 32
         line = [line].pack("H*")
       end
-      key = Digest::SHA2.digest(ec_bin + line)
+      Digest::SHA2.digest(ec_bin + line)
     end
     
     def self.encrypted_signature_cipher ec, line, iv, encrypt = true

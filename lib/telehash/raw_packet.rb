@@ -34,17 +34,17 @@ module Telehash
     
     def [] index
       if index.eql? :BODY
-        body
+        @body
       else
-        json[index.to_sym]
+        @json[index.to_sym]
       end
     end
     
     def []= index, value
       if index.eql? :BODY
-        body = value
+        @body = value
       else
-        json[index.to_sym] = value
+        @json[index.to_sym] = value
       end
     end
   end
