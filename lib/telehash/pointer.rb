@@ -3,7 +3,7 @@ module Telehash
     attr_reader :hashname, :ip, :port
     
     def self.parse see_line
-      Pointer.new *see_line.split(",")
+      Pointer.new(*see_line.split(","))
     end
     
     def initialize hashname, ip, port
