@@ -12,36 +12,47 @@ module Telehash::Core
     def initialize inbound_open, outbound_open
       @peer = inbound_open.peer
       
-      switch = inbound_open.switch
-      unless outbound_open.switch.eql? switch
+      unless outbound_open.switch.eql? inbound_open.switch
         raise ArgumentError.new "both packets must be from same switch"
       end
       
-      unless outbound_open.peer.eql? peer
+      unless outbound_open.peer.eql? @peer
         raise ArgumentError.new "both packets must be for the same peer"
       end
       
       @incoming_line = outbound_open.line
       @outgoing_line = inbound_open.line
-      @ip = @peer.ip
+      @ip   = @peer.ip
       @port = @peer.port
       
       ecdhe_secret = outbound_open.ec.dh_compute_key inbound_open.ec
-      encrypt_cipher_key = Digest::SHA2.digest(ecdhe_secret + [@incoming_line].pack("H*") + [@outgoing_line].pack("H*"))
-      @outgoing_encrypt_cipher = OpenSSL::Cipher.new "AES-256-CTR"
-      @outgoing_encrypt_cipher.encrypt
-      @outgoing_encrypt_cipher.key = encrypt_cipher_key
-      
-      decrypt_cipher_key = Digest::SHA2.digest(ecdhe_secret + [@outgoing_line].pack("H*") + [@incoming_line].pack("H*"))
-      @incoming_decrypt_cipher = OpenSSL::Cipher.new "AES-256-CTR"
-      @incoming_decrypt_cipher.decrypt
-      @incoming_decrypt_cipher.key = decrypt_cipher_key
+      @outgoing_encrypt_cipher = form_cipher ecdhe_secret, true
+      @incoming_encrypt_cipher = form_cipher ecdhe_secret, false
     end
     
-    def encrypt_outgoing data, iv
+    def form_cipher ecdhe_secret, encrypt = true
+      cipher = OpenSSL::Cipher.new "AES-256-CTR"
+
+      if encrypt
+        key = Digest::SHA2.digest(ecdhe_secret + [@incoming_line].pack("H*") + [@outgoing_line].pack("H*"))
+        cipher.encrypt
+      else
+        key = Digest::SHA2.digest(ecdhe_secret + [@outgoing_line].pack("H*") + [@incoming_line].pack("H*"))
+        @incoming_decrypt_cipher.decrypt
+      end
+      cipher.key = key
+      cipher
+    end
+    
+    def pack_iv iv
       if (iv.length == 32)
         iv = [iv].pack("H*")
       end
+      iv
+    end
+    
+    def encrypt_outgoing data, iv
+      iv = pack_iv iv
       begin
         @outgoing_encrypt_cipher.iv = iv
         @outgoing_encrypt_cipher.update(data.to_s) + @outgoing_encrypt_cipher.final
@@ -51,9 +62,7 @@ module Telehash::Core
     end
     
     def decrypt_incoming data, iv
-      if (iv.length == 32)
-        iv = [iv].pack("H*")
-      end
+      iv = pack_iv iv
       begin
         @incoming_decrypt_cipher.iv = iv
         @incoming_decrypt_cipher.update(data) + @incoming_decrypt_cipher.final
