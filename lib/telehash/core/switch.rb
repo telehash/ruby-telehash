@@ -27,6 +27,10 @@ module Telehash::Core
     def decrypt data, padding = OpenSSL::PKey::RSA::PKCS1_OAEP_PADDING
       @key.private_decrypt data, padding
     end
+
+    def decrypt64 data, padding = OpenSSL::PKey::RSA::PKCS1_OAEP_PADDING
+      Base64.decode64 @key.private_decrypt data, padding
+    end
        
     def sign data, digest = OpenSSL::Digest::SHA256.new
       @key.sign digest, data

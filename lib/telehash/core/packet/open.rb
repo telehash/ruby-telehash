@@ -8,58 +8,31 @@ module Telehash::Core::Packet
     attr_reader :incoming
     attr_reader :line, :at, :ec
     attr_reader :instantiated_at
-    attr        :packet
 
-    public
     def self.parse switch, packet, udpsocket_or_host, port = nil
-      
-      if packet.is_a? String
-        packet = Telehash::Core::Packet::Raw.parse packet
-      end
-      
-      unless packet[:type].eql? "open"
-        raise ArgumentError.new "Packet is not an open packet"
-      end
-      
-      sender_ec_public_key_data = switch.decrypt Base64.decode64 packet[:open]
-      ec = ec_point_from_data sender_ec_public_key_data
-
-      iv = [packet[:iv]].pack("H*")
-      inner_packet = decrypt_inner_packet ec, iv, packet.body
+      packet       = form_packet packet
+      incoming_ec  = ec_point_from_data switch.decrypt64 packet[:open]
+      iv           = from_hex packet[:iv]
+      inner_packet = decrypt_inner_packet incoming_ec, iv, packet.body
       
       unless inner_packet[:to].eql? switch.hashname
         raise ArgumentError.new "Packet was not meant for my hashname"
       end
       
-      at = inner_packet[:at]
       line = inner_packet[:line]
-      sender_rsa_public_key_data = inner_packet.body
+      decrypted_signature = decrypt_signature packet[:sig], incoming_ec, line, iv
 
-      unless at.is_a? Numeric
-        raise ArgumentError.new '"at" value is not a numeric type'
-      end
-      
-#      sender_hashname = Digest::SHA2.hexdigest sender_rsa_public_key_data
-      srsapk = OpenSSL::PKey::RSA.new sender_rsa_public_key_data
-
-      encrypted_signature = Base64.decode64(packet[:sig])
-      decrypted_signature = decrypt_signature encrypted_signature, ec, line, iv
+      srsapk = OpenSSL::PKey::RSA.new inner_packet.body
       unless srsapk.verify(OpenSSL::Digest::SHA256.new, decrypted_signature, packet.body)
         raise ArgumentError.new "Inner packet was not signed by the sender's RSA public key"
       end
 
-      incoming = true
-      instantiated_at = Time.now
-      at = Time.at at/1000.0 #milliseconds
-      if port
-        peer = switch.peer srsapk, udpsocket_or_host, port
-      else
-        peeraddr = udpsocket_or_host.peeraddr false
-        peer = switch.peer srsapk, peeraddr[2], peeraddr[1]
-      end
-      Open.new packet, switch, peer, incoming, line, at, ec, instantiated_at
+      at   = parse_at inner_packet
+      peer = form_peer srsapk, udpsocket_or_host, port
+
+      Open.new switch, peer, true, line, at, incoming_ec
     end
-    
+
     def self.generate switch, seed
       unless seed.public_key
         raise ArgumentError.new "Peer does not have a public key"
@@ -95,10 +68,43 @@ module Telehash::Core::Packet
     def to_s
       self.packet.to_s
     end
-    
+
     protected
-    def initialize packet, switch, peer, incoming, line, at, ec, instantiated_at
-      @packet, @switch, @peer, @incoming, @line, @at, @ec, @instantiated_at = 
+    
+    def self.form_peer udpsocket_or_host, port = nil
+      if port
+        switch.peer srsapk, udpsocket_or_host, port
+      else
+        peeraddr = udpsocket_or_host.peeraddr false
+        switch.peer srsapk, peeraddr[2], peeraddr[1]
+      end
+    end
+
+    def self.parse_at inner_packet
+      at = inner_packet[:at]
+      unless at.is_a? Numeric
+        raise ArgumentError.new '"at" value is not a numeric type'
+      end
+      at = Time.at at/1000.0 #milliseconds
+    end
+
+    def self.from_hex value
+      [value].pack('H*')
+    end
+    
+    def self.form_packet packet
+      if packet.is_a? String
+        packet = Telehash::Core::Packet::Raw.parse packet
+      end
+      
+      unless packet[:type].eql? "open"
+        raise ArgumentError.new "Packet is not an open packet"
+      end
+      packet
+    end
+    
+    def initialize packet, switch, peer, incoming, line, at, ec, instantiated_at = Time.now
+      @packet, @switch, @peer, @incoming, @line, @at, @ec, @instantiated_at =
         packet, switch, peer, incoming, line, at, ec, instantiated_at
     end
     
@@ -116,7 +122,7 @@ module Telehash::Core::Packet
     def self.decrypt_signature encrypted_sig, ec, line, iv
       cipher = encrypted_signature_cipher ec, line, iv, false
       cipher.padding = 1
-      cipher.update(encrypted_sig.to_s) + cipher.final
+      cipher.update(Base64.decode64 encrypted_sig) + cipher.final
     end
     
     def self.ec_point_from_data sender_public_key_data
