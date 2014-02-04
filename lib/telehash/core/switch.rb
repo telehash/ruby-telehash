@@ -8,7 +8,7 @@ module Telehash::Core
     attr_reader :public_key, :hashvalue
     attr        :key
     attr        :public_key_der
-    attr        :pending_lines, :peers    
+    attr        :pending_lines, :peers
     
     def initialize(rsa_pkey)
       @key            = rsa_pkey
@@ -17,7 +17,22 @@ module Telehash::Core
       
       @pending_lines  = {} #hashname to EC key
       @peers          = {} #hashname to Peer or Seed
+
       @hashvalue      = OpenSSL::Digest::SHA256.digest @public_key_der
+    end
+    
+    def peer_from_hashname hashname
+      @peers[hashname]
+    end
+    
+    def peer_from_addrinfo addrinfo
+      @peers.each_value.find do |peer|
+        addrinfo[1].eql?(peer.port) and addrinfo[2].eql?(peer.ip)
+      end
+    end
+
+    def hashvalue
+      @hashvalue ||= OpenSSL::Digest::SHA256.digest @public_key_der
     end
     
     def hashname
@@ -29,7 +44,7 @@ module Telehash::Core
     end
 
     def decrypt64 data, padding = OpenSSL::PKey::RSA::PKCS1_OAEP_PADDING
-      Base64.decode64 @key.private_decrypt data, padding
+      @key.private_decrypt Base64.decode64(data), padding
     end
        
     def sign data, digest = OpenSSL::Digest::SHA256.new

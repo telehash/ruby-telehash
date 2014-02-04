@@ -27,19 +27,24 @@ module Telehash::Core
       
       ecdhe_secret = outbound_open.ec.dh_compute_key inbound_open.ec
       @outgoing_encrypt_cipher = form_cipher ecdhe_secret, true
-      @incoming_encrypt_cipher = form_cipher ecdhe_secret, false
+      @incoming_decrypt_cipher = form_cipher ecdhe_secret, false
     end
     
     def form_cipher ecdhe_secret, encrypt = true
       cipher = OpenSSL::Cipher.new "AES-256-CTR"
-
+      
       if encrypt
         key = Digest::SHA2.digest(ecdhe_secret + [@incoming_line].pack("H*") + [@outgoing_line].pack("H*"))
         cipher.encrypt
       else
         key = Digest::SHA2.digest(ecdhe_secret + [@outgoing_line].pack("H*") + [@incoming_line].pack("H*"))
-        @incoming_decrypt_cipher.decrypt
+        cipher.decrypt
       end
+      puts "forming line cipher:"
+      puts "  incoming_line: #@incoming_line"
+      puts "  outgoing_line: #@outgoing_line"
+      puts "  encrypt: #{encrypt}"
+      puts "  calculated key: #{key.unpack("H*")[0]}"
       cipher.key = key
       cipher
     end

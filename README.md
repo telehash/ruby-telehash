@@ -1,13 +1,11 @@
 # Telehash
 
-Implementation of the [Telehash v2 protocol][telehash]. This is 
-currently ridiculously nonfunctional.
+Implementation of the [Telehash v2 protocol][telehash].
 
-[![Travis CI status][status-img]][status]
-[![Gem Version](https://badge.fury.io/rb/telehash.png)](http://badge.fury.io/rb/telehash)
-[![Code Climate](https://codeclimate.com/github/telehash/ruby-telehash.png)](https://codeclimate.com/github/telehash/ruby-telehash)
-[![Dependency Status](https://gemnasium.com/telehash/ruby-telehash.png)](https://gemnasium.com/telehash/ruby-telehash)
-
+[![Travis CI status][travis-status-img]][travis-status]
+[![Gem Version][rubygems-status-img]][rubygems-status]
+[![Code Climate][cclimate-status-img]][cclimate-status]
+[![Dependency Status][gemnasium-status-img]][gemnasium-status]
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -24,7 +22,7 @@ Or install it yourself as:
 
 ## Usage
 
-Don't even try (yet)
+See the `examples` subdirectory.
 
 ## Contributing
 
@@ -34,6 +32,12 @@ Don't even try (yet)
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
 
-[status-img]: https://api.travis-ci.org/telehash/ruby-telehash.png
-[status]:     https://travis-ci.org/telehash/ruby-telehash
-[telehash]:   http://telehash.org
+[travis-status-img]:    https://api.travis-ci.org/telehash/ruby-telehash.png
+[travis-status]:        https://travis-ci.org/telehash/ruby-telehash
+[telehash]:             http://telehash.org
+[rubygems-status]:      http://badge.fury.io/rb/telehash
+[rubygems-status-img]:  https://badge.fury.io/rb/telehash.png
+[cclimate-status-img]: https://codeclimate.com/github/telehash/ruby-telehash.png
+[cclimate-status]:      https://codeclimate.com/github/telehash/ruby-telehash
+[gemnasium-status-img]: https://gemnasium.com/telehash/ruby-telehash.png
+[gemnasium-status]:     https://gemnasium.com/telehash/ruby-telehash

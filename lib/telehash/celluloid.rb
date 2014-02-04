@@ -1,0 +1,1 @@
+require 'telehash/celluloid/switch'

@@ -4,6 +4,7 @@ require 'base64'
 
 module Telehash::Core::Packet
   class Open
+    attr :packet
     attr_reader :switch, :peer
     attr_reader :incoming
     attr_reader :line, :at, :ec
@@ -28,9 +29,9 @@ module Telehash::Core::Packet
       end
 
       at   = parse_at inner_packet
-      peer = form_peer srsapk, udpsocket_or_host, port
+      peer = form_peer switch, srsapk, udpsocket_or_host, port
 
-      Open.new switch, peer, true, line, at, incoming_ec
+      Open.new packet, switch, peer, true, line, at, incoming_ec
     end
 
     def self.generate switch, seed
@@ -68,10 +69,14 @@ module Telehash::Core::Packet
     def to_s
       self.packet.to_s
     end
-
+    
+    def outbound?
+      !self.incoming
+    end
+    
     protected
     
-    def self.form_peer udpsocket_or_host, port = nil
+    def self.form_peer switch, srsapk, udpsocket_or_host, port = nil
       if port
         switch.peer srsapk, udpsocket_or_host, port
       else
@@ -202,7 +207,7 @@ module Telehash::Core::Packet
       group
     end
 
-    def self.create_inner_packet switch, peer, line, at = nil
+    def self.create_inner_packet switch, peer, line = nil, at = nil
       if !line
         line = SecureRandom.hex 16
       elsif line.length == 16
