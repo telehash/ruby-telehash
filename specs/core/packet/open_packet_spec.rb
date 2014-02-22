@@ -5,13 +5,13 @@ require 'openssl'
 require 'telehash'
 require 'spec_helper'
 
-module OpenSpec
-  Open = Telehash::Core::Packet::Open
+module OpenPacketSpec
+  OpenPacket = Telehash::Core::Packet::OpenPacket
   Switch = Telehash::Core::Switch
   Seed = Telehash::Core::Seed
   RSA = OpenSSL::PKey::RSA
   
-  describe Open do
+  describe OpenPacket do
   
     let :private_key do
       data 'private_key.pem'
@@ -33,8 +33,8 @@ module OpenSpec
     it 'generates an open based on a seed' do
       seeds = Seed.parse_all data_file 'seeds.json'
       seed = seeds[0]
-      open_packet = Open.generate switch, peer
-      open_packet.must_be_instance_of Open
+      open_packet = OpenPacket.generate switch, peer
+      open_packet.must_be_instance_of OpenPacket
     end
 
     it 'parses a generated open'

@@ -4,7 +4,7 @@ require 'base64'
 require 'securerandom'
 
 module Telehash::Core::Packet
-  class Seek
+  class SeekPacket
     attr_reader :channel
     attr_reader :hashname
     attr_reader :seen
@@ -29,7 +29,7 @@ module Telehash::Core::Packet
         iv: iv.unpack("H*")[0]
       }, encrypted_inner_packet)
       
-      Seek.new channel, hashname, seen, packet
+      SeekPacket.new channel, hashname, seen, packet
     end
     
     def self.parse line, packet
@@ -42,7 +42,7 @@ module Telehash::Core::Packet
 
       hashname = inner_packet[:seek]
       seen = inner_packet[:see].to_a.map { |seek_line| Telehash::Core::Pointer.parse seek_line }
-      Seek.new Telehash::Core::Channel.new(line, inner_packet[:c]), hashname, seen, packet
+      SeekPacket.new Telehash::Core::Channel.new(line, inner_packet[:c]), hashname, seen, packet
     end
     
     def to_s

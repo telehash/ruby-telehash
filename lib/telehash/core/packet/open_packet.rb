@@ -3,7 +3,7 @@ require 'digest'
 require 'base64'
 
 module Telehash::Core::Packet
-  class Open
+  class OpenPacket
     attr :packet
     attr_reader :switch, :peer
     attr_reader :incoming
@@ -31,7 +31,7 @@ module Telehash::Core::Packet
       at   = parse_at inner_packet
       peer = form_peer switch, srsapk, udpsocket_or_host, port
 
-      Open.new packet, switch, peer, true, line, at, incoming_ec
+      OpenPacket.new packet, switch, peer, true, line, at, incoming_ec
     end
 
     def self.generate switch, seed
@@ -63,7 +63,7 @@ module Telehash::Core::Packet
       
       packet = outer_packet
       peer = switch.peer seed.public_key, seed.ip, seed.port
-      Open.new packet, switch, peer, incoming, line, at, ec, instantiated_at
+      OpenPacket.new packet, switch, peer, incoming, line, at, ec, instantiated_at
     end
     
     def to_s

@@ -31,7 +31,7 @@ sleep 2
 
 switch.lines.each do |incoming_line_id, line|
   ch = Telehash::Core::Channel.new line
-  p = Telehash::Core::Packet::Seek.generate ch, switch.hashname
+  p = Telehash::Core::Packet::SeekPacket.generate ch, switch.hashname
   switch.send line.peer, p
 end
 

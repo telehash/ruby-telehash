@@ -1,5 +1,5 @@
 module Telehash::Core::Packet
-  class Line
+  class LinePacket
 
     def self.generate line, inner_packet
       iv = SecureRandom.random_bytes(16)
@@ -10,11 +10,10 @@ module Telehash::Core::Packet
         iv: iv.unpack("H*")[0]
       }, encrypted_inner_packet)
 
-      Line.new line, packet
+      LinePacket.new line, packet
     end
 
     def self.parse line, packet
-      Raw = Telehash::Core::Packet::Raw
       if packet.is_a? String
         packet = Raw.parse packet
       end
@@ -22,7 +21,11 @@ module Telehash::Core::Packet
       iv = packet[:iv]
       inner_packet = Raw.parse line.decrypt_incoming(packet.body, iv)
 
-      Line.new line, packet
+      LinePacket.new line, packet
+    end
+    
+    def initialize line, packet
+      @line, @packet = line, packet
     end
   end
 end

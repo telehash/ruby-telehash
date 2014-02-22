@@ -30,7 +30,7 @@ module Telehash::Celluloid
     end
 
     def open peer
-      packet = Telehash::Core::Packet::Open.generate self, peer
+      packet = Telehash::Core::Packet::OpenPacket.generate self, peer
       pending_opens << packet
       @socket.send packet.to_s, 0, peer.ip.to_s, peer.port
     end
@@ -57,7 +57,7 @@ module Telehash::Celluloid
       puts "parsed packet"
 
       case packet
-      when Telehash::Core::Packet::Open
+      when Telehash::Core::Packet::OpenPacket
         puts "received open"
         puts "checking #{pending_opens.length} pending_open(s)"
         outbound = pending_opens.find do |pending|
@@ -69,7 +69,7 @@ module Telehash::Celluloid
           @peer_lines[line.peer.hashname] = line
           @lines[line.incoming_line] = line
         end
-      when Telehash::Core::Packet::Seek
+      when Telehash::Core::Packet::SeekPacket
         puts "received seek"
       end
     end

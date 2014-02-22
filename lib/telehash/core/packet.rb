@@ -1,6 +1,7 @@
 require 'telehash/core/packet/raw'
-require 'telehash/core/packet/open'
-require 'telehash/core/packet/seek'
+require 'telehash/core/packet/line_packet'
+require 'telehash/core/packet/open_packet'
+require 'telehash/core/packet/seek_packet'
 
 module Telehash::Core
   module Packet
@@ -10,11 +11,11 @@ module Telehash::Core
       type = raw["type"]
       case type
       when "open"
-        return Open.parse switch, raw, addrinfo[2], addrinfo[1]
+        return OpenPacket.parse switch, raw, addrinfo[2], addrinfo[1]
       when "line"
         line = switch.lines[raw["line"]]
         if line
-          return Seek.parse line, raw
+          return SeekPacket.parse line, raw
         else
           puts "unknown line received, disposing"
         end
