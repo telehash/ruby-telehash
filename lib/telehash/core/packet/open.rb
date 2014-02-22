@@ -25,7 +25,7 @@ module Telehash::Core::Packet
 
       srsapk = OpenSSL::PKey::RSA.new inner_packet.body
       unless srsapk.verify(OpenSSL::Digest::SHA256.new, decrypted_signature, packet.body)
-        raise ArgumentError.new "Inner packet was not signed by the sender's RSA public key"
+        raise ArgumentError.new "Inner packet was not signed by the sender's public key"
       end
 
       at   = parse_at inner_packet

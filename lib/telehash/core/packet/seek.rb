@@ -17,8 +17,7 @@ module Telehash::Core::Packet
       inner_packet = Telehash::Core::Packet::Raw.new({
         type: "seek",
         seek: hashname,
-        c: channel.id,
-        seq: 0
+        c: channel.id
       })
       if seen
         inner_packet[:see] = seen.to_a
